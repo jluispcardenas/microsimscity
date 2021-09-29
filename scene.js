@@ -13,7 +13,7 @@ function setup() {
 
   for (var block = 0; block < GRID_WIDTH*GRID_WIDTH; block++) {
     for (var parcel = 0; parcel < BUILDINGS_PER_BLOCK; parcel++) {
-      grid[block + "-" + parcel] = types[Math.floor(Math.random() * types.length)]
+      grid[block + "-" + parcel] = [types[Math.floor(Math.random() * types.length)],0]
     }
   }
   
@@ -36,6 +36,8 @@ function draw() {
   background(200);
   cam.move((delta/2), -delta, -delta);
   ambientLight(180);
+  directionalLight(255, 0, 0, 0, 0, 0);
+  pointLight(0, 0, 255, 0, 0, 0);
 
   for (i = 0; i < currents.length; i++) {
     prts = currents[i].split("-")
@@ -67,14 +69,19 @@ function drawFigure(k) {
   if (val >= 1) val = 0.9
   rotateX(val)
 
+  max_heights = {"c": PARCEL_PX, "B": PARCEL_PX*2, "S": PARCEL_PX*2.5}
+  if (grid[k][1] < max_heights[grid[k][0]]) {
+    grid[k][1] += 0.5
+  }
+  
   if (grid[k][0] == "c") {
     fill(150,100,100)
-    box(PARCEL_PX);
+    box(PARCEL_PX, PARCEL_PX, -grid[k][1]);
   } else if (grid[k][0] == "B") {
     fill(110,110,100)
-    box(PARCEL_PX,PARCEL_PX, PARCEL_PX*2)
+    box(PARCEL_PX,PARCEL_PX, -grid[k][1])
   } else if (grid[k][0] == "S") {
     fill(150,150,150)
-    box(PARCEL_PX,PARCEL_PX,PARCEL_PX*2.5)
+    box(PARCEL_PX,PARCEL_PX, -grid[k][1])
   }
 }
